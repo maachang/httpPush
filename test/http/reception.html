@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no, email=no, address=no">
+
+<title>reception</title>
+
+<script src="./httpPush-min.js"></script>
+
+</head>
+<body>
+
+<input type="button" value="clear" onclick="javascript:clearHttpPush()"><br>
+<div id="clearResult"></div>
+<br>
+
+<input type="button" value="create" onclick="javascript:createHttpPush()"><br>
+<div id="createId"></div>
+<br>
+
+<input type="button" value="data count" onclick="javascript:sizeHttpPush()"><br>
+<div id="sizeId"></div>
+<br>
+
+<input type="button" value="send" id="send" onclick="javascript:sendHttpPush()"><br>
+<div id="sendResult"></div>
+<br>
+<textarea style="width:500px;height:200px" id="sendData">
+</textarea>
+<br>
+
+<input type="button" value="clearSendData" id="clearSendData" onclick="javascript:clearSendData()"><br>
+<br>
+
+<script><!--
+var domain = "http://localhost:3334";
+var reception = HttpPush.reception(domain);
+
+var clearHttpPush = function() {
+    reception.close(function(res) {
+        document.getElementById("clearResult").innerHTML = res;
+        document.getElementById("clearResult").innerHTML = "";
+        document.getElementById("createId").innerHTML = "";
+        document.getElementById("sizeId").innerHTML = "";
+    });
+}
+
+var createHttpPush = function() {
+    reception.close(function(res) {
+        reception.connect(function(uuid) {
+            document.getElementById("clearResult").innerHTML = "";
+            document.getElementById("createId").innerHTML = "uuid: " + uuid;
+        });
+    });
+}
+
+var sizeHttpPush = function() {
+    reception.size(function(size) {
+        document.getElementById("sizeId").innerHTML = size;
+    });
+}
+
+var sendHttpPush = function() {
+    var value = document.getElementById("sendData").value;
+    reception.send(value,function(res) {
+        document.getElementById("sendResult").innerHTML = res + " " + new Date();
+    });
+}
+
+var clearSendData = function() {
+    document.getElementById("sendData").value = null;
+}
+
+--></script>
+
+</body>
+</html>

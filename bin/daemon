@@ -1,0 +1,37 @@
+#!/bin/bash
+################################################################################
+# daemon.
+#
+# Copyright (c) 2017 masahito suzuki, Inc. All Rights Reserved.
+################################################################################
+
+SSTART=./pushHttp
+SEND=stopHttpPush
+
+mstartup() {
+    echo "*** Starting pushHttp >>"
+    sh ${SSTART} > /dev/null &
+}
+
+mshutdown() {
+    echo "*** Shutdown pushHttp <<"
+    sh ${SEND}
+}
+
+case "$1" in
+'start')
+        mstartup
+        ;;
+'stop')
+        mshutdown
+        ;;
+
+'restart')
+        mshutdown
+        mstartup
+        ;;
+*)
+        echo "Usage: $0 {start stop restart}"
+        ;;
+esac
+exit 0

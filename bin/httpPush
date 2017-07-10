@@ -1,0 +1,88 @@
+#!/bin/sh
+ARGS=${*}
+
+################################################################################
+# Please set up environment.
+################################################################################
+
+# java home.
+export JAVA_HOME=${JAVA_HOME}
+
+# project directory.
+PROJ_DIR=.
+
+# java option.
+OPT=
+
+# firstMemory.
+STM=1024
+
+# maxMemory.
+EXM=1024
+
+# CompileThreshold(size).
+#CTHREAD=10000
+CTHREAD=1800
+
+################################################################################
+# Please define execution conditions.
+################################################################################
+
+# execution package.
+EXEC_PACKAGE=com.maachang.httpPush.HttpPush
+
+# logconf name.
+# default(log4j.xml).
+LOGCONF=
+
+################################################################################
+# The point does not change from here.
+################################################################################
+
+# batch dir.
+BATCH_DIR=${PROJ_DIR}/
+
+# library directory.
+LIB_DIR=${PROJ_DIR}/lib
+
+# logconf name.
+if [ ${LOGCONF:--1} = "-1" ];
+then
+    LOGCONF=log4j.xml
+fi
+
+LOGCONF=${PROJ_DIR}/conf/${LOGCONF}
+
+# java option.
+OPT="${OPT} -Dlog4j.configuration=file:${LOGCONF}"
+#OPT="${OPT} -Djava.nio.channels.spi.SelectorProvider=sun.nio.ch.EPollSelectorProvider"
+OPT="${OPT} -Djava.awt.headless=true"
+OPT="${OPT} -Djava.net.preferIPv4Stack=true"
+
+OPT="${OPT} -XX:+UseOnStackReplacement -XX:+UseCompilerSafepoints"
+OPT="${OPT} -XX:+UseParallelGC -XX:+UseParallelOldGC -XX:+UseBiasedLocking"
+OPT="${OPT} -XX:CompileThreshold=${CTHREAD}"
+
+# my classpath.
+MY_CLASSPATH=`sh ${BATCH_DIR}/core/classpath.sh ${LIB_DIR}`
+
+# malloc change.
+#CHANGE_MALLOC=/usr/local/lib/libjemalloc.so.1
+
+# execution java.
+cd ${PROJ_DIR}
+
+echo # startup httpPush.
+
+if [ ${CHANGE_MALLOC:--1} = "-1" ];
+then
+    ${JAVA_HOME}/bin/java -server -Xms${STM}m -Xmx${EXM}m ${OPT} -classpath ${MY_CLASSPATH} ${EXEC_PACKAGE} ${ARGS}
+else
+    LD_PRELOAD=${CHANGE_MALLOC} ${JAVA_HOME}/bin/java -server -Xms${STM}m -Xmx${EXM}m ${OPT} -classpath ${MY_CLASSPATH} ${EXEC_PACKAGE} ${ARGS}
+fi
+
+echo # exit httpPush.
+
+exit 0
+
+

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no, email=no, address=no">
+
+<title>sse</title>
+
+<script src="./httpPush-min.js"></script>
+
+</head>
+<body>
+
+UUID:<input type="text" name="uuid" id="uuid" value="" style="width:200px;">
+<br>
+<input type="button" value="connectUUID" onclick="javascript:connectUUID()">
+<input type="button" value="closeUUID" onclick="javascript:closeUUID()">
+<input type="button" value="isConnect" onclick="javascript:isConnect()">
+<div id="settingUUID"></div>
+<div id="sseMode"></div>
+
+<br><br>
+<input type="button" value="clear" onclick="javascript:clearResult()">
+<div id="sseResult">
+    -<br>
+</div>
+
+<script><!--
+
+var domain = "http://localhost:3332";
+var uuid = ""
+var sse = null
+
+var clearResult = function() {
+    document.getElementById("sseResult").innerHTML = "-<br>";
+}
+
+var connectUUID = function() {
+    var id = document.getElementById("uuid").value;
+    if(id == "") {
+        alert("UUIDが設定されていません");
+        return;
+    }
+    uuid = id;
+    if(sse != null) {
+        sse.close();
+        sse = null;
+    }
+    sse = HttpPush.sse(domain,uuid);
+    sse.connect(function(success,event) {
+        console.log(event);
+        console.log("isConnect:" + sse.isConnect());
+        if(success) {
+            var em = document.getElementById("sseResult");
+            em.innerHTML = em.innerHTML + "" + event.data + "<br>";
+        }
+    });
+    document.getElementById("settingUUID").innerHTML = "target :" + uuid;
+}
+
+var closeUUID = function() {
+    if(sse != null) {
+        sse.close();
+        sse = null;
+    }
+    document.getElementById("settingUUID").innerHTML = "";
+    clearResult();
+}
+
+var isConnect = function() {
+    var res = (sse != null && sse.isConnect());
+    document.getElementById("sseMode").innerHTML = res;
+}
+
+--></script>
+
+</body>
+</html>
