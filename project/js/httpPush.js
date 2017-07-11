@@ -7,7 +7,126 @@ var _n = null;
 var o = {};
 
 // ajax.
-var ajax=function(){var e=function(){return(new Date).getTime()},t={ajax:function(){var t=void 0,r=!1,o=!1,a="Msxml2.XMLHTTP",i=[a+".6.0",a+".3.0","Microsoft.XMLHTTP"];try{new XDomainRequest,r=!0,o=!0}catch(u){try{new ActiveXObject(a),r=!0}catch(c){}}var s=function(){var e;if(r)for(var a=0;a<n.length;a++)try{new ActiveXObject(i[a]),e=function(){return new ActiveXObject(i[a])};break}catch(u){}return e==t&&(e=function(){return new XMLHttpRequest}),o?function(n){if(1==n){var t=new XDomainRequest;return t.ie=0,t}return e()}:e}(),f=function(e,n){"POST"!=e&&"DELETE"!=e||n.setRequestHeader("Content-type","application/x-www-form-urlencoded")},p=function(e,n){if(n)for(var t in n)e.setRequestHeader(t,n[t])};return function(n,r,o,a,i){n=(n+"").toUpperCase(),r=r+(-1==r.indexOf("?")?"?":"&")+e();var u="";if("string"!=typeof o)for(var c in o)u+="&"+c+"="+encodeURIComponent(o[c]);else u=o;if("GET"==n&&(r+=u,u=null),i==t){var v=s();return v.open(n,r,!1),f(n,v),p(v,a),v.send(u),v.responseText}var v=s(/^https?:\/\//i.test(r)?1:0);0==v.ie?(v.onprogress=function(){},v.onload=function(){i(v.status,v.responseText)},v.open(n,r)):(v.open(n,r,!0),v.onreadystatechange=function(){4==v.readyState&&i(v.status,v.responseText)}),f(n,v),p(v,a),v.send(u)}}()};return t.ajax}();
+// method POST or GET
+// url 接続先のURLを設定します.
+// params GET or POSTのパラメータをセットします(String or {}).
+// header 送信対象のHTTPヘッダを設定します({}).
+// call コールバックメソッドを設定します.
+//      第一引数: ステータス, 第二引数: レスポンス(string).
+var ajax = function () {
+    
+    // クロスドメイン対応Ajax.
+    var ajax = (function(){
+        var ie = false ;
+        var xdom = false ;
+        var ia = 'Msxml2.XMLHTTP' ;
+        var iex = [ia+'.6.0',ia+'.3.0','Microsoft.XMLHTTP'] ;
+        try {
+            new XDomainRequest() ;
+            ie = true ;
+            xdom = true ;
+        } catch( ee ) {
+            try {
+                new ActiveXObject(ia) ;
+                ie = true ;
+            } catch( e ) {
+            }
+        }
+        var ax =(function(){
+            var a ;
+            if( ie ) {
+                for( var i = 0 ; i < n.length ; i ++ ) {
+                    try{
+                        new ActiveXObject(iex[i])
+                        a = function(){
+                            return new ActiveXObject(iex[i])
+                        }
+                        break ;
+                    }catch(e){
+                    }
+                }
+            }
+            if( a == _u ) {
+                a = function(){
+                    return new XMLHttpRequest()
+                }
+            }
+            if( xdom ) {
+                return function(d) {
+                    if( d == 1 ) {
+                        var n = new XDomainRequest()
+                        n.ie = 0 ;
+                        return n ;
+                    }
+                    return a() ;
+                }
+            }
+            return a ;
+        })();
+        
+        var head=function(m,x){
+            if(m=='POST') {
+                x.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+            }
+        }
+        var setHeader=function(x,m){
+            if(m) {
+                for(var k in m) {
+                    x.setRequestHeader(k, m[k]);
+                }
+            }
+        }
+        return function( method,url,params,header,call ) {
+            method = (method+"").toUpperCase() ;
+            url += (( url.indexOf( "?" ) == -1 )? "?":"&" )+(new Date().getTime()) ;
+            var pms = "" ;
+            if (typeof(params) != "string") {
+                for( var k in params ) {
+                    pms += "&" + k + "=" + encodeURIComponent( params[ k ] ) ;
+                }
+            } else {
+                pms = params;
+            }
+            if( method == "GET" ) {
+                url += pms ;
+                pms = null ;
+            }
+            if( call == _u ) {
+                var x=ax();
+                x.open(method,url,false);
+                head(method,x);
+                setHeader(x,header);
+                x.send(pms);
+                return x.responseText
+            }
+            else {
+                var x=ax((/^https?:\/\//i.test(url))?1:0);
+                if( x.ie == 0 ) {
+                    x.onprogress = function() {}
+                    x.onload = function() {
+                        call(x.status,x.responseText)
+                    }
+                    x.open(method,url);
+                }
+                else {
+                    x.onreadystatechange=function(){
+                        if(x.readyState==4) {
+                            call(x.status,x.responseText)
+                        }
+                    };
+                    x.open(method,url,true);
+                }
+                head(method,x);
+                setHeader(x,header);
+                x.send(pms)
+            }
+        };
+    })();
+    ajax.json = function( v ) {
+        return eval("["+v+"]")[0];
+    }
+    return ajax;
+}();
 
 // httpPush受付処理を生成.
 // domain 接続先のドメイン(http://sample.com)を設定します.
@@ -17,6 +136,7 @@ o.reception = function(domain) {
     if(domain == _u || domain == _n) {
         return null;
     }
+    var _j = ajax.json;
     var ret = {};
     var uuid = "";
     
@@ -34,7 +154,7 @@ o.reception = function(domain) {
             return;
         }
         ajax("GET",domain+"/create","",null,function(state,res) {
-            res = eval("["+res+"]")[0];
+            res = _j(res);
             uuid = res.uuid;
             call(uuid);
         });
@@ -48,7 +168,7 @@ o.reception = function(domain) {
             return;
         }
         ajax("GET",domain+"/clear/" + uuid,"",null,function(state,res) {
-            res = eval("["+res+"]")[0];
+            res = _j(res);
             uuid = "";
             call(res.result);
         });
@@ -70,7 +190,7 @@ o.reception = function(domain) {
             return;
         }
         ajax("GET",domain+"/size/" + uuid,"",null,function(state,res) {
-            res = eval("["+res+"]")[0];
+            res = _j(res);
             call(res.size);
         });
     }
@@ -84,7 +204,7 @@ o.reception = function(domain) {
             return;
         }
         ajax("POST",domain + "/send/" + uuid,data,null,function(state,res) {
-            res = eval("["+res+"]")[0];
+            res = _j(res);
             call(res.result);
         });
     }
