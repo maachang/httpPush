@@ -68,7 +68,7 @@ public final class NioUtil {
 		ch.setOption(StandardSocketOptions.SO_RCVBUF, recvBuffer);
 
 		// サーバーソケットBind.
-		if (addr == null) {
+		if (addr == null || (addr = addr.trim()).length() == 0) {
 			ch.socket().bind(new InetSocketAddress(port), backlog);
 		} else {
 			ch.socket().bind(new InetSocketAddress(addr, port), backlog);

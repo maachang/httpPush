@@ -55,7 +55,6 @@ LOGCONF=${PROJ_DIR}/conf/${LOGCONF}
 
 # java option.
 OPT="${OPT} -Dlog4j.configuration=file:${LOGCONF}"
-#OPT="${OPT} -Djava.nio.channels.spi.SelectorProvider=sun.nio.ch.EPollSelectorProvider"
 OPT="${OPT} -Djava.awt.headless=true"
 OPT="${OPT} -Djava.net.preferIPv4Stack=true"
 
@@ -76,8 +75,10 @@ echo # startup httpPush.
 
 if [ ${CHANGE_MALLOC:--1} = "-1" ];
 then
+    echo "#start httpPush."
     ${JAVA_HOME}/bin/java -server -Xms${STM}m -Xmx${EXM}m ${OPT} -classpath ${MY_CLASSPATH} ${EXEC_PACKAGE} ${ARGS}
 else
+    echo "#start httpPush(malloc)."
     LD_PRELOAD=${CHANGE_MALLOC} ${JAVA_HOME}/bin/java -server -Xms${STM}m -Xmx${EXM}m ${OPT} -classpath ${MY_CLASSPATH} ${EXEC_PACKAGE} ${ARGS}
 fi
 

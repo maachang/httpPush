@@ -5,16 +5,16 @@
 # Copyright (c) 2017 masahito suzuki, Inc. All Rights Reserved.
 ################################################################################
 
-SSTART=./pushHttp
-SEND=stopHttpPush
+SSTART=./httpPush
+SEND=./stopHttpPush
 
 mstartup() {
-    echo "*** Starting pushHttp >>"
+    echo "*** Starting pushHttp"
     sh ${SSTART} > /dev/null &
 }
 
 mshutdown() {
-    echo "*** Shutdown pushHttp <<"
+    echo "*** Shutdown pushHttp"
     sh ${SEND}
 }
 

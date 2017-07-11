@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.maachang.httpPush.data.PushDataManager;
 import com.maachang.httpPush.data.ShutdownHttpPush;
+import com.maachang.httpPush.net.NetUtil;
 import com.maachang.httpPush.pref.Def;
 import com.maachang.httpPush.reception.Reception;
 import com.maachang.httpPush.reception.ReceptionInfo;
@@ -35,6 +36,7 @@ public final class HttpPush {
 	public static final void main(String[] args) {
 		LOG.info("########## startup HttpPush");
 		try {
+			NetUtil.initNet();
 			HttpPush httpPush = new HttpPush();
 			httpPush.execute();
 		} catch (Throwable e) {
