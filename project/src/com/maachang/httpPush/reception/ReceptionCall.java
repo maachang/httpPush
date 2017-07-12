@@ -347,6 +347,15 @@ public final class ReceptionCall extends NioCall {
 			// Pushデータ生成.
 			PushData data = null;
 			if ("POST".equals(request.getMethod())) {
+				if (manager.getMaxBodyLength() > 0
+						&& request.getContentLength() > manager
+								.getMaxBodyLength()) {
+
+					// 処理結果を返却.
+					rem.setRequest(null);
+					errorResponse(rem, 413);
+					return true;
+				}
 
 				// POST全体のデータをセット.
 				data = new PushData(new String(request.getBody(), "UTF8"));
@@ -357,13 +366,24 @@ public final class ReceptionCall extends NioCall {
 				String url = request.getUrl();
 				int p = url.indexOf("?");
 				if (p == -1) {
+					rem.setRequest(null);
 					errorResponse(rem, 403);
 					return true;
 				}
 				ListMap map = HttpAnalysis.paramsAnalysis(url, p + 1);
 				String d = map.get("data");
 				if (d == null) {
+					rem.setRequest(null);
 					errorResponse(rem, 403);
+					return true;
+				}
+				if (manager.getMaxBodyLength() > 0
+						&& d.getBytes("UTF8").length > manager
+								.getMaxBodyLength()) {
+
+					// 処理結果を返却.
+					rem.setRequest(null);
+					errorResponse(rem, 413);
 					return true;
 				}
 				data = new PushData(d);

@@ -21,17 +21,20 @@ public class PushDataManager {
 	protected int expLen;
 	protected long expTime;
 	protected long closeTimeout;
+	protected int maxBodyLength;
 
 	protected Map<String, PushDataQueue> manager = new ConcurrentHashMap<String, PushDataQueue>();
 
 	protected PushDataManager() {
 	}
 
-	public PushDataManager(Time16SequenceId seq, int len, long time, long ctime) {
+	public PushDataManager(Time16SequenceId seq, int len, long time,
+			long ctime, int mbody) {
 		seqManager = seq;
 		expLen = len;
 		expTime = time;
 		closeTimeout = ctime;
+		maxBodyLength = mbody;
 
 		monitor = new PushDataMonitor(this);
 		monitor.startThread();
@@ -140,6 +143,10 @@ public class PushDataManager {
 
 	public boolean isStop() {
 		return stopFlag.get() != 0;
+	}
+
+	public int getMaxBodyLength() {
+		return maxBodyLength;
 	}
 
 	public void load(InputStream o) throws IOException {

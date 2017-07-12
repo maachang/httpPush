@@ -80,7 +80,8 @@ public final class HttpPush {
 		// Dataマネージャを生成.
 		manager = new PushDataManager(seq, conf.getInt("data", "minLength", 0),
 				conf.getLong("data", "minTimeout", 0), conf.getLong("data",
-						"sessionTimeout", 0));
+						"sessionTimeout", 0), conf.getInt("data",
+						"maxBodyLength", 0));
 
 		// 以前の保存データが存在する場合.
 		if (Utils.isFile(Def.HTTP_PUSH_DATA)) {
