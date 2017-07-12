@@ -516,6 +516,7 @@ public final class ReceptionCall extends NioCall {
 		try {
 			b = ("HTTP/1.1 200 OK\r\n" + "Allow: OPTIONS, GET, POST\r\n"
 					+ "Cache-Control: no-cache\r\n"
+					+ "X-Accel-Buffering: no\r\n"
 					+ "Access-Control-Allow-Origin: *\r\n" + "Server: "
 					+ Def.RECEPTION_SERVER_NAME + "\r\n"
 					+ "Connection: close\r\n" + "Content-Length: 0\r\n\r\n")
@@ -523,6 +524,7 @@ public final class ReceptionCall extends NioCall {
 
 			s1 = ("HTTP/1.1 ").getBytes("UTF8");
 			s2 = ("\r\n" + "Cache-Control: no-cache\r\n"
+					+ "X-Accel-Buffering: no\r\n"
 					+ "Access-Control-Allow-Origin: *\r\n" + "Server: "
 					+ Def.RECEPTION_SERVER_NAME + "\r\n"
 					+ "Connection: close\r\n"

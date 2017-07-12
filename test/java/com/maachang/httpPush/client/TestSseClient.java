@@ -1,14 +1,16 @@
 package com.maachang.httpPush.client;
 
+import com.maachang.httpPush.data.PushData;
+
 public class TestSseClient {
     protected TestSseClient(){}
     
     public static final void main(String[] args) throws Exception {
-        String uuid = "0000015d-2890-fcf4-0000-000000000001";
+        String uuid = "0000015d-386e-bea4-0000-000000000001";
         
-        SseClient client = new SseClient("localhost",3332);
+        SseClient client = new SseClient(true,"push.maachang.com");
         
-        client.connect(uuid, new HttpPushCallback() {
+        client.connect(uuid, new SseCallback() {
             public void onMessage(PushData data) {
                 System.out.println(">data:" + data.getData());
             }
@@ -18,7 +20,7 @@ public class TestSseClient {
             }
         });
         
-        while(true) {
+        while(client.isConnect()) {
             Thread.sleep(100L);
         }
     }

@@ -242,6 +242,7 @@ public final class SseCall extends NioCall {
 			// jsの[sse.readyState]を1にするため.
 			b = ("HTTP/1.1 200 OK\r\n" + "Content-Type: text/event-stream\r\n"
 					+ "Cache-Control: no-cache\r\n" + "Connection: close\r\n"
+					+ "X-Accel-Buffering: no\r\n"
 					+ "Access-Control-Allow-Origin: ").getBytes("UTF8");
 			bb = ("\r\n" + "Access-Control-Allow-Credentials: true\r\n"
 					+ "Server: " + Def.SSE_SERVER_NAME + "\r\n\r\n" + "data:\n\n")

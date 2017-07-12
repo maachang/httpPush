@@ -278,9 +278,10 @@ public class SseClient {
 
 		// リクエスト送信.
 		private final void sendRequest(String uuid) throws IOException {
-			byte[] req = (new StringBuilder("GET /").append(client.address)
-					.append(":").append(client.port).append("/").append(uuid)
-					.append("/").append(client.ssl ? "https" : "http").append(
+			final byte[] req = (new StringBuilder("GET /").append(
+					client.address).append(":").append(client.port).append("/")
+					.append(uuid).append("/").append(
+							client.ssl ? "https" : "http").append(
 							" HTTP/1.1\r\n").append("Host: ").append(
 							client.address).append(":").append(client.port)
 					.append("\r\n").append("User-Agent: ").append(
@@ -312,7 +313,8 @@ public class SseClient {
 					b = null;
 
 					// ヘッダ内容が異常な場合.
-					if (!header.startsWith("HTTP/1.1 200")
+					if ((!header.startsWith("HTTP/1.1 200") && !header
+							.startsWith("HTTP/1.0 200"))
 							|| header
 									.indexOf("\r\nContent-Type: text/event-stream\r\n") == -1) {
 						throw new IOException("error response:\n" + header);
