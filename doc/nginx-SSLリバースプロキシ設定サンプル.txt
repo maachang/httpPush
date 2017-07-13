@@ -4,6 +4,11 @@ nginx 設定.
 ・ドメイン名はmaachang.com.
 ・HttpPush用に、push.maachang.comを利用.
 
+/etc/ssl/certs/dhparam.pemのファイルは、以下コマンドで作成する.
+> sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+
+
+
 /etc/nginx/nginx.conf
 
 http {
