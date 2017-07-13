@@ -38,7 +38,6 @@ http {
         ssl_stapling_verify on;
         add_header Strict-Transport-Security max-age=15768000;
 
-
         # sse(ServerSentEvent対応).
         chunked_transfer_encoding off;
 

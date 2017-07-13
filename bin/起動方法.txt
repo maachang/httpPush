@@ -1,0 +1,38 @@
+HttpPush起動方法
+
+１）インストール対象のOSにあったJava8(JDK)をダウンロード.
+　http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+
+２）インストール
+
+３）JDKインストール先のパスを環境変数に登録.
+　>vi /etc/profile
+　>一番下に、以下を追加
+　　export JAVA_HOME=JDKインストール先
+
+４）httpPush/binの環境をコピー.
+　>/var/project/httpPush
+
+５）Linuxの場合、実行バッチファイルに対して、実行権限をつける。
+　>cd /var/project/httpPush
+　>chmod 755 daemon
+　>chmod 755 httpPush
+　>chmod 755 stopHttpPush
+　>chmod 755 core/classpath.sh
+
+６）サーバ起動
+　>cd /var/project/httpPush
+　>./httpPush
+
+７）サーバ停止
+　>cd /var/project/httpPush
+　>./stopHttpPush
+
+８）常駐起動
+　>cd /var/project/httpPush
+　>./daemon start
+
+９）常駐シャットダウン
+　>cd /var/project/httpPush
+　>./daemon stop
+
