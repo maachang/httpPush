@@ -1,0 +1,54 @@
+#!/bin/sh
+ARGS=${*}
+
+################################################################################
+# Please set up environment.
+################################################################################
+
+# java home.
+export JAVA_HOME=${JAVA_HOME}
+
+# project directory.
+PROJ_DIR=.
+
+# java option.
+OPT=
+
+# firstMemory.
+STM=64
+
+# maxMemory.
+EXM=64
+
+################################################################################
+# Please define execution conditions.
+################################################################################
+
+# execution package.
+EXEC_PACKAGE=com.maachang.httpPush.client.CommandReception
+
+################################################################################
+# The point does not change from here.
+################################################################################
+
+# batch dir.
+BATCH_DIR=${PROJ_DIR}/
+
+# library directory.
+LIB_DIR=${PROJ_DIR}/lib
+
+# java option.
+OPT="${OPT} -Djava.awt.headless=true"
+OPT="${OPT} -Djava.net.preferIPv4Stack=true"
+
+# my classpath.
+MY_CLASSPATH=`sh ${BATCH_DIR}/core/classpath.sh ${LIB_DIR}`
+
+# execution java.
+cd ${PROJ_DIR}
+
+${JAVA_HOME}/bin/java -Xms${STM}m -Xmx${EXM}m ${OPT} -classpath ${MY_CLASSPATH} ${EXEC_PACKAGE} ${ARGS}
+
+exit 0
+
+

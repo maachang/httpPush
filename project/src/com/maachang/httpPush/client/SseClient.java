@@ -284,7 +284,8 @@ public class SseClient {
 							client.ssl ? "https" : "http").append(
 							" HTTP/1.1\r\n").append("Host: ").append(
 							client.address).append(":").append(client.port)
-					.append("\r\n").append("User-Agent: ").append(
+					.append("\r\n").append("Accept: text/event-stream").append(
+							"\r\n").append("User-Agent: ").append(
 							Def.SSE_CLIENT_NAME).append("\r\n\r\n").toString())
 					.getBytes("UTF8");
 

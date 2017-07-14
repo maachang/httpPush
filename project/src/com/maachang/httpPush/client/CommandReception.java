@@ -34,7 +34,7 @@ public class CommandReception {
 				}
 				if ("quit".equals(in) || "exit".equals(in)) {
 					return;
-				} else if ("help".equals(in)) {
+				} else if ("help".equals(in) || "?".equals(in)) {
 					viewHelp();
 					continue;
 				}

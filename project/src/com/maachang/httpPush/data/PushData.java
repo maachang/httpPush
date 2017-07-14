@@ -102,11 +102,12 @@ public final class PushData {
 
 	public byte[] toBinary() throws IOException {
 		StringBuilder buf = new StringBuilder();
+		if (data == null) {
+			data = "";
+		}
+		buf.append("data: ").append(data).append("\n");
 		if (!event.isEmpty()) {
 			buf.append("event: ").append(event).append("\n");
-		}
-		if (!data.isEmpty()) {
-			buf.append("data: ").append(data).append("\n");
 		}
 		if (!id.isEmpty()) {
 			buf.append("id: ").append(id).append("\n");

@@ -9,7 +9,7 @@ import com.maachang.httpPush.net.NioElement;
  * Sse要素.
  */
 public final class SseElement extends NioElement {
-	protected String uuid;
+	protected String uuid = null;
 
 	public void clear() {
 		super.clear();
@@ -29,6 +29,14 @@ public final class SseElement extends NioElement {
 
 	public void setUUID(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public void setComet(boolean comet) {
+		sendData.setChunkedMode(comet);
+	}
+
+	public boolean isComet() {
+		return sendData.isChunkedMode();
 	}
 
 	public void sendMode() throws IOException {

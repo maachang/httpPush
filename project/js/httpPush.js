@@ -35,7 +35,7 @@ var ajax = function () {
         var ax =(function(){
             var a ;
             if( ie ) {
-                for( var i = 0 ; i < n.length ; i ++ ) {
+                for( var i = 0 ; i < iex.length ; i ++ ) {
                     try{
                         new ActiveXObject(iex[i])
                         a = function(){
@@ -119,6 +119,7 @@ var ajax = function () {
                 head(method,x);
                 setHeader(x,header);
                 x.send(pms)
+                return x;
             }
         };
     })();
@@ -220,6 +221,65 @@ o.reception = function(domain) {
     return ret;
 }
 
+// コメット実装.
+var Comet = function(domain,uuid,callmessage,callerror) {
+    var readyState = 0;
+    var closeFlag = false;
+    var ajaxObj = null;
+    
+    var o = {};
+    o.close = function() {
+        if(ajaxObj != null) {
+            ajaxObj.abort();
+            ajaxObj = null;
+        }
+        closeFlag = true;
+        readyState = 0;
+    }
+    o.readyState = function() {
+        return readyState;
+    }
+    
+    var analysis = function(res) {
+        var k,b,p;
+        var ret = {};
+        b = 0;
+        while((p = res.indexOf(": ",b)) != -1) {
+            k = res.substring(b,p);
+            b = p + 2;
+            p = res.indexOf("\r\n",b);
+            if(p == -1) {
+                ret[k] = res.substring(b);
+                break;
+            }
+            ret[k] = res.substring(b,p);
+            b = p + 2;
+        }
+        return ret;
+    }
+    var connect = function() {
+        if(closeFlag) {
+            return;
+        }
+        ajaxObj = ajax("GET",domain + "/" + uuid,"",null,
+            function(state,res) {
+                if(state != 200) {
+                    close();
+                    callerror({state:state,result:res});
+                    return;
+                }
+                if(closeFlag) {
+                    readyState = 0;
+                    return;
+                }
+                readyState = 1;
+                callmessage(analysis(res));
+                setTimeout(connect,0);
+            });
+    }
+    connect();
+}
+
 // HttpPushServerSentEvent処理を生成.
 // domain 接続先のドメイン(http://sample.com)を設定します.
 // uuid 接続先のUUIDを設定します.
@@ -242,10 +302,7 @@ o.sse = function(domain,id) {
         if(sse != null) {
             ret.close();
         }
-        sse = new EventSource(
-            domain + "/" + document.domain + "/" + uuid + "/" + window.location.protocol,
-            {withCredentials: true});
-        sse.onmessage = function(e) {
+        var msgCall =  function(e) {
             
             // データが無効な場合は受け取らない.
             if(e.data == _u || e.data == _n || e.data == "") {
@@ -253,13 +310,22 @@ o.sse = function(domain,id) {
             }
             call(true,e);
         };
-        sse.onerror = function(e) {
+        var errCall = function(e) {
             
             // 通信が切断している場合は、コネクションを明示的に破棄.
             if(!ret.isConnect()) {
                 ret.close();
             }
             call(false,e);
+        }
+        if(window["EventSource"] != _u) {
+            sse = new EventSource(
+                domain + "/" + document.domain + "/" + uuid + "/" + window.location.protocol,
+                {withCredentials: true});
+            sse.onmessage = msgCall;
+            sse.onerror = errCall;
+        } else {
+            sse = Comet(domain,uuid,msgCall,errCall);
         }
     }
     // 切断処理.
