@@ -345,6 +345,10 @@ public final class ReceptionCall extends NioCall {
 			}
 
 			// Pushデータ生成.
+			String pData = null;
+			String pEvent = null;
+			String pId = null;
+			String pRetry = null;
 			PushData data = null;
 			if ("POST".equals(request.getMethod())) {
 				if (manager.getMaxBodyLength() > 0
@@ -358,7 +362,7 @@ public final class ReceptionCall extends NioCall {
 				}
 
 				// POST全体のデータをセット.
-				data = new PushData(new String(request.getBody(), "UTF8"));
+				pData = new String(request.getBody(), "UTF8");
 			} else {
 
 				// GETで設定されているデータを取得.
@@ -386,21 +390,23 @@ public final class ReceptionCall extends NioCall {
 					errorResponse(rem, 413);
 					return true;
 				}
-				data = new PushData(d);
+				pData = d;
 			}
 
 			// event条件をセット.
 			if (paramsSize > 2) {
-				data.setEvent(params.get(2));
+				pEvent = params.get(2);
 			}
 			// retry条件をセット.
 			if (paramsSize > 3) {
-				data.setRetry(params.get(3));
+				pRetry = params.get(3);
 			}
 			// id条件をセット.
 			if (paramsSize > 4) {
-				data.setId(params.get(4));
+				pId = params.get(4);
 			}
+			data = PushData.create(pEvent, pRetry, pId, pData);
+
 			// データセット.
 			manager.offer(uuid, data);
 

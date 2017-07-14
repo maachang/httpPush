@@ -86,7 +86,7 @@ public final class PushDataQueue {
 		if (len > 0) {
 			PushData d;
 			for (int i = 0; i < len; i++) {
-				d = new PushData();
+				d = PushData.create();
 				d.load(o);
 				queue.offer(d);
 			}

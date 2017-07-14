@@ -223,8 +223,8 @@ public final class SseCall extends NioCall {
 	/** パラメータを取得. **/
 	private static final List<String> getParams(String url) {
 		int p = url.indexOf("?");
-		if(p != 0) {
-			url = url.substring(0,p);
+		if (p != -1) {
+			url = url.substring(0, p);
 		}
 		List<String> ret = Utils.cutString(url, "/");
 		if (ret.size() == 1) {

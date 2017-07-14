@@ -5,91 +5,53 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Push用管理データ. 1つのPushイベントデータを管理します.
+ * Pushデータ.
  */
-public final class PushData {
-
-	/**
-	 * イベントのタイプです。これが指定されている場合、イベントはブラウザ内で、 イベント名に応じたイベントリスナへ送られます。Web
-	 * サイトのソースコードでは 名前付きイベントを受け取るために、addEventListener() を使用します。
-	 * メッセージでイベント名が指定されていない場合は、onmessage ハンドラが 呼び出されます。
-	 */
-	protected String event;
-
-	/**
-	 * EventSource オブジェクトの last event ID の値に設定する、イベント ID です。
-	 */
-	protected String id;
-
-	/**
-	 * イベントの送信を試みるときに使用する reconnection time です。 [What code handles this?]
-	 * これは整数値であることが必要で、 reconnection time をミリ秒単位で指定します。整数値ではない値が
-	 * 指定されると、このフィールドは無視されます。
-	 */
-	protected String retry;
-
-	/**
-	 * メッセージのデータフィールドです。EventSource が data: で始まる、
-	 * 複数の連続した行を受け取ったときは、それらを連結して各項目の間に 改行文字を挿入します。終端の改行は取り除かれます。
-	 */
-	protected String data;
-
-	protected long createTime;
-
-	public PushData() {
-		this(null, null, null, null);
+public class PushData {
+	public static final PushData create() throws IOException {
+		return create(null, null, null, null);
 	}
 
-	public PushData(String v) {
-		this(null, null, null, v);
+	public static final PushData create(String data) throws IOException {
+		return create(null, null, null, data);
 	}
 
-	public PushData(String e, String v) {
-		this(e, null, null, v);
+	public static final PushData create(String event, String data)
+			throws IOException {
+		return create(event, null, null, data);
 	}
 
-	public PushData(String e, String r, String v) {
-		this(e, r, null, v);
+	public static final PushData create(String event, String retry, String data)
+			throws IOException {
+		return create(event, retry, null, data);
 	}
 
-	public PushData(String e, String r, String i, String v) {
-		event = (e == null) ? "" : e;
-		retry = (r == null) ? "" : r;
-		id = (i == null) ? "" : i;
-		data = (v == null) ? "" : v;
-		createTime = System.currentTimeMillis();
+	public static final PushData create(String event, String retry, String id,
+			String data) throws IOException {
+		StringBuilder buf = new StringBuilder();
+		if (data == null) {
+			data = "";
+		}
+		buf.append("data: ").append(data).append("\n");
+		if (event != null && !event.isEmpty()) {
+			buf.append("event: ").append(event).append("\n");
+		}
+		if (id != null && !id.isEmpty()) {
+			buf.append("id: ").append(id).append("\n");
+		}
+		if (retry != null && !retry.isEmpty()) {
+			buf.append("retry: ").append(retry).append("\n");
+		}
+		buf.append("\n");
+		return new PushData(buf.toString().getBytes("UTF8"));
 	}
 
-	public String getEvent() {
-		return event;
-	}
+	private byte[] binary;
+	private long createTime;
 
-	public void setEvent(String e) {
-		event = e;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getRetry() {
-		return retry;
-	}
-
-	public void setRetry(String retry) {
-		this.retry = retry;
-	}
-
-	public String getData() {
-		return data;
-	}
-
-	public void setData(String data) {
-		this.data = data;
+	public PushData(byte[] binary) {
+		this.binary = binary;
+		this.createTime = System.currentTimeMillis();
 	}
 
 	public long getCreateTime() {
@@ -101,41 +63,24 @@ public final class PushData {
 	}
 
 	public byte[] toBinary() throws IOException {
-		StringBuilder buf = new StringBuilder();
-		if (data == null) {
-			data = "";
-		}
-		buf.append("data: ").append(data).append("\n");
-		if (!event.isEmpty()) {
-			buf.append("event: ").append(event).append("\n");
-		}
-		if (!id.isEmpty()) {
-			buf.append("id: ").append(id).append("\n");
-		}
-		if (!retry.isEmpty()) {
-			buf.append("retry: ").append(retry).append("\n");
-		}
-		buf.append("\n");
-		return buf.toString().getBytes("UTF8");
+		return binary;
 	}
 
 	protected void load(InputStream o) throws IOException {
 		createTime = System.currentTimeMillis()
 				- (long) SaveLoadUtil.loadInt(o);
 
-		event = SaveLoadUtil.loadString(o);
-		id = SaveLoadUtil.loadString(o);
-		retry = SaveLoadUtil.loadString(o);
-		data = SaveLoadUtil.loadString(o);
+		int len = SaveLoadUtil.loadInt(o);
+		binary = new byte[len];
+		o.read(binary, 0, len);
 	}
 
 	protected void save(OutputStream o) throws IOException {
 		int time = (int) (System.currentTimeMillis() - createTime);
 
 		SaveLoadUtil.saveInt(o, time);
-		SaveLoadUtil.saveString(o, event);
-		SaveLoadUtil.saveString(o, id);
-		SaveLoadUtil.saveString(o, retry);
-		SaveLoadUtil.saveString(o, data);
+		SaveLoadUtil.saveInt(o, binary.length);
+		o.write(binary, 0, binary.length);
 	}
+
 }

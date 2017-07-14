@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import com.maachang.httpPush.data.PushData;
 import com.maachang.httpPush.pref.Def;
 import com.maachang.httpPush.util.ByteArrayIO;
 import com.maachang.httpPush.util.atomic.AtomicNumber32;
@@ -371,7 +370,7 @@ public class SseClient {
 		private final void setCall(String data) throws IOException {
 
 			// 受信データを解析.
-			PushData pushData = new PushData();
+			SseData pushData = new SseData();
 			int p;
 			int b = 0;
 			String key;

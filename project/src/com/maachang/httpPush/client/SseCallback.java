@@ -1,7 +1,5 @@
 package com.maachang.httpPush.client;
 
-import com.maachang.httpPush.data.PushData;
-
 /**
  * Sse受信コールバック.
  */
@@ -13,7 +11,7 @@ public abstract class SseCallback {
 	 * @param data
 	 *            対象のデータが設定されます.
 	 */
-	public abstract void onMessage(PushData data);
+	public abstract void onMessage(SseData data);
 
 	/**
 	 * HttpPushエラー発生時に呼び出されます.
