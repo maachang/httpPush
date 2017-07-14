@@ -107,6 +107,19 @@ public final class SseCall extends NioCall {
 		// 送信対象のデータが存在しない場合.
 		if (b == null) {
 
+			// comet通信の場合、chunkedの終端を送付済みの場合は、Queueから
+			// データを取得しない.
+			if (sendData.isChunkedEnd()) {
+
+				// データが存在しない場合.
+				if (buf.position() == 0) {
+
+					// クローズ処理.
+					return false;
+				}
+				return true;
+			}
+
 			// 新しいデータが存在するかチェック.
 			PushData data = manager.poll(sem.getUUID());
 			if (data == null) {

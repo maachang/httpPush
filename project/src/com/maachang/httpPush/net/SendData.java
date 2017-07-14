@@ -9,7 +9,8 @@ import java.nio.channels.SelectionKey;
 public class SendData {
 	protected NioElement element = null;
 
-	protected int chunkedMode = 0;
+	protected int chunkedState = 0;
+	protected boolean chunked = false;
 	protected int sendDataPosition = 0;
 	protected byte[] sendData = null;
 
@@ -36,7 +37,7 @@ public class SendData {
 	public void set(byte[] sendData) throws IOException {
 
 		// データがチャンク送信の場合.
-		if (chunkedMode > 1) {
+		if (chunkedState == 2) {
 			byte[] h = (Integer.toHexString(sendData.length).toLowerCase() + "\r\n")
 					.getBytes("UTF8");
 			int len = h.length + sendData.length + CHUNKED_FOOTER.length;
@@ -48,8 +49,9 @@ public class SendData {
 			p += sendData.length;
 			System.arraycopy(CHUNKED_FOOTER, 0, b, p, CHUNKED_FOOTER.length);
 			sendData = b;
-		} else if (chunkedMode == 1) {
-			chunkedMode = 2;
+			chunkedState = 3;
+		} else if (chunkedState == 1) {
+			chunkedState = 2;
 		}
 		this.sendData = sendData;
 		this.sendDataPosition = 0;
@@ -68,11 +70,16 @@ public class SendData {
 		return sendDataPosition;
 	}
 
-	public void setChunkedMode(boolean chunkedMode) {
-		this.chunkedMode = chunkedMode ? 1 : 0;
+	public void setChunked(boolean chunked) {
+		this.chunked = chunked;
+		this.chunkedState = chunked ? 1 : 0;
 	}
 
-	public boolean isChunkedMode() {
-		return chunkedMode >= 1;
+	public boolean isChunked() {
+		return chunked;
+	}
+
+	public boolean isChunkedEnd() {
+		return chunkedState == 3;
 	}
 }

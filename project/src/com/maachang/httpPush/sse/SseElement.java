@@ -32,11 +32,11 @@ public final class SseElement extends NioElement {
 	}
 
 	public void setComet(boolean comet) {
-		sendData.setChunkedMode(comet);
+		sendData.setChunked(comet);
 	}
 
 	public boolean isComet() {
-		return sendData.isChunkedMode();
+		return sendData.isChunked();
 	}
 
 	public void sendMode() throws IOException {
