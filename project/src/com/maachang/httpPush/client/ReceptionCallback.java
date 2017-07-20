@@ -7,11 +7,11 @@ import java.util.Map;
  */
 public abstract class ReceptionCallback {
 
-	/**
-	 * コールバック.
-	 * 
-	 * @param result
-	 *            処理結果のJSON情報が渡されます.
-	 */
-	public abstract void onResult(Map<String, Object> result);
+    /**
+     * コールバック.
+     * 
+     * @param result
+     *            処理結果のJSON情報が渡されます.
+     */
+    public abstract void onResult(Map<String, Object> result);
 }

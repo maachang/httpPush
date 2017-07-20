@@ -5,69 +5,69 @@ package com.maachang.httpPush.sse;
  */
 public class SseInfo {
 
-	/** HTTP同時接続数. **/
-	private int backlog = Integer.MAX_VALUE;
+    /** HTTP同時接続数. **/
+    private int backlog = Integer.MAX_VALUE;
 
-	/** Nioバッファ長. **/
-	private int byteBufferLength = 1024;
+    /** Nioバッファ長. **/
+    private int byteBufferLength = 1024;
 
-	/** ソケット送信バッファ長. **/
-	private int socketSendBuffer = 1024;
+    /** ソケット送信バッファ長. **/
+    private int socketSendBuffer = 1024;
 
-	/** ソケット受信バッファ長. **/
-	private int socketReceiveBuffer = 2048;
+    /** ソケット受信バッファ長. **/
+    private int socketReceiveBuffer = 2048;
 
-	/** サーバーバインドアドレス. **/
-	private String localAddress = null;
+    /** サーバーバインドアドレス. **/
+    private String localAddress = null;
 
-	/** サーバーバインドポート. **/
-	private int localPort = 3332;
+    /** サーバーバインドポート. **/
+    private int localPort = 3332;
 
-	public int getBacklog() {
-		return backlog;
-	}
+    public int getBacklog() {
+        return backlog;
+    }
 
-	public void setBacklog(int backlog) {
-		this.backlog = backlog;
-	}
+    public void setBacklog(int backlog) {
+        this.backlog = backlog;
+    }
 
-	public int getByteBufferLength() {
-		return byteBufferLength;
-	}
+    public int getByteBufferLength() {
+        return byteBufferLength;
+    }
 
-	public void setByteBufferLength(int byteBufferLength) {
-		this.byteBufferLength = byteBufferLength;
-	}
+    public void setByteBufferLength(int byteBufferLength) {
+        this.byteBufferLength = byteBufferLength;
+    }
 
-	public int getSocketSendBuffer() {
-		return socketSendBuffer;
-	}
+    public int getSocketSendBuffer() {
+        return socketSendBuffer;
+    }
 
-	public void setSocketSendBuffer(int socketSendBuffer) {
-		this.socketSendBuffer = socketSendBuffer;
-	}
+    public void setSocketSendBuffer(int socketSendBuffer) {
+        this.socketSendBuffer = socketSendBuffer;
+    }
 
-	public int getSocketReceiveBuffer() {
-		return socketReceiveBuffer;
-	}
+    public int getSocketReceiveBuffer() {
+        return socketReceiveBuffer;
+    }
 
-	public void setSocketReceiveBuffer(int socketReceiveBuffer) {
-		this.socketReceiveBuffer = socketReceiveBuffer;
-	}
+    public void setSocketReceiveBuffer(int socketReceiveBuffer) {
+        this.socketReceiveBuffer = socketReceiveBuffer;
+    }
 
-	public String getLocalAddress() {
-		return localAddress;
-	}
+    public String getLocalAddress() {
+        return localAddress;
+    }
 
-	public void setLocalAddress(String localAddress) {
-		this.localAddress = localAddress;
-	}
+    public void setLocalAddress(String localAddress) {
+        this.localAddress = localAddress;
+    }
 
-	public int getLocalPort() {
-		return localPort;
-	}
+    public int getLocalPort() {
+        return localPort;
+    }
 
-	public void setLocalPort(int localPort) {
-		this.localPort = localPort;
-	}
+    public void setLocalPort(int localPort) {
+        this.localPort = localPort;
+    }
 }

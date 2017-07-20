@@ -66,7 +66,7 @@ var ajax = function () {
         
         var head=function(m,x){
             if(m=='POST') {
-                x.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+                x.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
             }
         }
         var setHeader=function(x,m){
