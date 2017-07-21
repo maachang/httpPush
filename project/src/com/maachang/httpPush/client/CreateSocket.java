@@ -92,9 +92,9 @@ final class CreateSocket {
 
     /** Socket基本オプション. **/
     private static final int LINGER = 0;
-    private static final int SENDBUF = 1024;
-    private static final int RECVBUF = 2048;
-    private static final boolean TCP_NODELAY = true;
+    private static final int SENDBUF = 2048;
+    private static final int RECVBUF = 8192;
+    private static final boolean TCP_NODELAY = false;
     private static final boolean KEEP_ALIVE = false;
 
     /** Httpソケットオプションをセット. **/

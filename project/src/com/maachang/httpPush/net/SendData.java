@@ -27,7 +27,7 @@ public class SendData {
     static {
         byte[] b = null;
         try {
-            b = "\r\n0\r\n\r\n".getBytes("UTF8");
+            b = "0\r\n\r\n".getBytes("UTF8");
         } catch (Exception e) {
             b = null;
         }
@@ -40,13 +40,23 @@ public class SendData {
         if (chunkedState == 2) {
             byte[] h = (Integer.toHexString(sendData.length).toLowerCase() + "\r\n")
                     .getBytes("UTF8");
-            int len = h.length + sendData.length + CHUNKED_FOOTER.length;
+            int len = h.length + sendData.length + 2 + CHUNKED_FOOTER.length;
             byte[] b = new byte[len];
             int p = 0;
+            
+            // (length)\r\n
             System.arraycopy(h, 0, b, p, h.length);
             p += h.length;
+            
+            // body(length)
             System.arraycopy(sendData, 0, b, p, sendData.length);
             p += sendData.length;
+            
+            // \r\n
+            b[p++] = (byte)'\r';
+            b[p++] = (byte)'\n';
+            
+            // 0\r\n\r\n
             System.arraycopy(CHUNKED_FOOTER, 0, b, p, CHUNKED_FOOTER.length);
             sendData = b;
             chunkedState = 3;
